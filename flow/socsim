@@ -1,0 +1,24 @@
+#-----------------------------------------------------------------------------
+# SoC Labs socsim script to run required simulation
+# A joint work commissioned on behalf of SoC Labs, under Arm Academic Access license.
+#
+# Contributors
+#
+# David Mapstone (d.a.mapstone@soton.ac.uk)
+#
+# Copyright  2022, SoC Labs (www.soclabs.org)
+#-----------------------------------------------------------------------------
+
+#!/usr/bin/env bash
+
+DEFAULT_SIMULATOR="ivlog"
+if [[ -z "${SIMULATOR}" ]]; then 
+    SIMULATOR=$DEFAULT_SIMULATOR
+fi
+# $SOC_TOP_DIR"/flow/simulators/"$SIMULATOR"_sim.sh" $@
+
+# Find a simulation script in the SoCSim environments of all subrepos
+simscript=$(find -E ${SOCSIM_PATH//:/\/} -name "${1}.sh")
+
+# Run Script if Found
+$simscript $@
