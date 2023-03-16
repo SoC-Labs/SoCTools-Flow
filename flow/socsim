@@ -18,7 +18,7 @@ fi
 # $SOC_TOP_DIR"/flow/simulators/"$SIMULATOR"_sim.sh" $@
 
 # Find a simulation script in the SoCSim environments of all subrepos
-simscript=$(find -E ${SOCSIM_PATH//:/\/} -name "${1}.sh")
+simscript=$(find ${SOCSIM_PATH//:/\ } -name "${1}.sh")
 
 # Run Script if Found
 $simscript $@

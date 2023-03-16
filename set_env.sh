@@ -49,6 +49,7 @@ else
 
     # SoCSim Specific
     # Source environment variables for all submodules
+    SOCSIM_PATH="$DESIGN_ROOT/simulate/socsim"
     for d in $DESIGN_ROOT/* ; do
         if [ -f "$d/.git" ]; then
             if [ -d "$d/simulate/socsim" ]; then
