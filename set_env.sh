@@ -24,7 +24,7 @@ if [ -z $DESIGN_ROOT ]; then
     source $DESIGN_ROOT/set_env.sh
 else
     # Set Environment Variable for this Repository
-    export SOCSIM_DIR="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+    export SOCSIM_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]:-${(%):-%x}}")" && pwd)"
 
     # If this Repo is root of workspace
     if [ $SOCSIM_DIR = $DESIGN_ROOT ]; then
