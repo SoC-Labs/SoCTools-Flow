@@ -15,7 +15,7 @@ DEFAULT_SIMULATOR="ivlog"
 if [[ -z "${SIMULATOR}" ]]; then 
     SIMULATOR=$DEFAULT_SIMULATOR
 fi
-# $SOC_TOP_DIR"/flow/simulators/"$SIMULATOR"_sim.sh" $@
+# $PROJECT_DIR"/flow/simulators/"$SIMULATOR"_sim.sh" $@
 
 # Find a simulation script in the SoCSim environments of all subrepos
 simscript=$(find ${SOCSIM_PATH//:/\ } -name "${1}.sh")
