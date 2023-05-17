@@ -1,0 +1,3 @@
+[submodule "tools/chipkit_flow"]
+	path = tools/chipkit_flow
+	url = https://git.soton.ac.uk/soclabs/chipkit_flow.git
