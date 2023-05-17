@@ -21,10 +21,7 @@ OUT_DIR         ?= $(PROJECT_DIR)
 # Name of generated filelist by python script
 OUTPUT_FILELIST := $(OUT_DIR)/filelist.flist
 
-bootrom:
-	make -C $(NANOSOC_TECH_DIR)/system bootrom
-
-htmlgen: bootrom
+gen_html:
 	@echo building HTML tree
 	@mkdir -p $(OUT_DIR)/build
 	@(cd $(OUT_DIR)/build; \
