@@ -12,8 +12,10 @@
 import argparse
 import os
 
-verilog_extensions = (".v", ".sv")
+# Files with these extensions are included in compiled filelists
+verilog_extensions = (".v", ".sv", ".vh")
 
+# Exclude paths including these strings
 filelist_exclusions = ["cortex","dma"]
 
 filelist_header = """//-----------------------------------------------------------------------------
@@ -89,12 +91,15 @@ def filelist_compile(args):
     print("------------------")
     print("Compiling Filelist")
     print("------------------")
+    # Read in filelist and add newlines to paths
     filelist = read_list(input_filelist)
     filelist = [x+"\n" for x in filelist]
+    # Create string of all paths to write out
     filelist_str = filelist_header
     for path in filelist: filelist_str += path
     print("Compile Done")
     print("------------------")
+    # Write out output filelist
     f_outlist = open(output_filelist, "w")
     f_outlist.write(filelist_str)
     f_outlist.close()
