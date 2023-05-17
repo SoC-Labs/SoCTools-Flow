@@ -26,5 +26,5 @@ gen_html:
 	@mkdir -p $(OUT_DIR)/build
 	@(cd $(OUT_DIR)/build; \
 	rm *.html; rm *.gif; \
-	$(SOCTOOLS_FLOW_DIR)/bin/htmlgen/filelist_compile.py -f $(FILELIST) -o $(OUTPUT_FILELIST) ; \
+	$(SOCTOOLS_FLOW_DIR)/bin/filelist_compile.py -e -f $(FILELIST) -o $(OUTPUT_FILELIST) ; \
 	$(SOCTOOLS_FLOW_DIR)/bin/htmlgen/v2html/v2html -f $(OUTPUT_FILELIST) -ht $(TOP_MODULE) ; )
