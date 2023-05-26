@@ -13,10 +13,10 @@
 TOP_MODULE      ?= nanosoc_chip
 
 # Filelist to give to v2html
-FILELIST        ?= $(PROJECT_DIR)/flist/project/system.flist
+FILELIST        ?= $(SOCLABS_PROJECT_DIR)/flist/project/system.flist
 
 # Directory to store generated HTML
-OUT_DIR         ?= $(PROJECT_DIR)
+OUT_DIR         ?= $(SOCLABS_PROJECT_DIR)
 
 # Name of generated filelist by python script
 OUTPUT_FILELIST := $(OUT_DIR)/filelist.flist
@@ -26,5 +26,5 @@ gen_html:
 	@mkdir -p $(OUT_DIR)/build
 	@(cd $(OUT_DIR)/build; \
 	rm *.html; rm *.gif; \
-	$(SOCTOOLS_FLOW_DIR)/bin/filelist_compile.py -e -f $(FILELIST) -o $(OUTPUT_FILELIST) ; \
-	$(SOCTOOLS_FLOW_DIR)/bin/htmlgen/v2html/v2html -f $(OUTPUT_FILELIST) -ht $(TOP_MODULE) ; )
+	$(SOCLABS_SOCTOOLS_FLOW_DIR)/bin/filelist_compile.py -e -f $(FILELIST) -o $(OUTPUT_FILELIST) ; \
+	$(SOCLABS_SOCTOOLS_FLOW_DIR)/bin/htmlgen/v2html/v2html -f $(OUTPUT_FILELIST) -ht $(TOP_MODULE) ; )

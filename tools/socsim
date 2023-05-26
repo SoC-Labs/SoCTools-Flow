@@ -25,11 +25,11 @@ else
             if [ ${2} == "all" ]; then
                 # Clean all simualation directories
                 echo "Cleaning all Project Simulation Directories"
-                rm -rf $PROJECT_DIR/simulate/sim
-                mkdir -p $PROJECT_DIR/simulate/sim
+                rm -rf $SOCLABS_PROJECT_DIR/simulate/sim
+                mkdir -p $SOCLABS_PROJECT_DIR/simulate/sim
             else
                 # Remove specific simulaiton directory
-                SIM_DIR=$PROJECT_DIR/simulate/sim/${2}
+                SIM_DIR=$SOCLABS_PROJECT_DIR/simulate/sim/${2}
                 if [ -d "$SIM_DIR" ]; then
                     rm -rf $SIM_DIR
                 else 
@@ -40,7 +40,7 @@ else
     fi
 
     # Find a simulation script in the SoCSim environments of all subrepos
-    simscript=$(find ${SOCSIM_PATH//:/\ } -name "${1}.sh")
+    simscript=$(find ${SOCLABS_SOCSIM_PATH//:/\ } -name "${1}.sh")
 
     # Run Script if Found
     $simscript $@

@@ -11,4 +11,4 @@
 #-----------------------------------------------------------------------------
 
 # Call Python script and pass options across
-python3 $SOCTOOLS_FLOW_DIR/bin/htmlgen/project_html_gen.py $@
+python3 $SOCLABS_SOCTOOLS_FLOW_DIR/bin/htmlgen/project_html_gen.py $@

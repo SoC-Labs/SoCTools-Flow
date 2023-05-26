@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #------------------------------------------------------------------------------------
 # HTML Project Generation Script
-# - Generates HTML based on all filelist in PROJECT_DIR/flist/project
+# - Generates HTML based on all filelist in SOCLABS_PROJECT_DIR/flist/project
 # A joint work commissioned on behalf of SoC Labs, under Arm Academic Access license.
 #
 # Contributors
@@ -28,7 +28,7 @@ def top_mod_find(filelist):
 
 def bootrom_gen():
     # Runs Bootrom generation script in NanoSoC Directory
-    bootrom_scipt_dir = os.getenv("NANOSOC_TECH_DIR")+"/system"
+    bootrom_scipt_dir = os.getenv("SOCLABS_NANOSOC_TECH_DIR")+"/system"
     subprocess.run(["make","-C",bootrom_scipt_dir,"bootrom"])
 
 def html_gen(filelist_path):
@@ -38,9 +38,9 @@ def html_gen(filelist_path):
     # Find Top-level module name
     top_mod = top_mod_find(filelist_path)
     # Work out output Directory
-    outdir = os.getenv("PROJECT_DIR")+"/"+filelist_name+"/html"
+    outdir = os.getenv("SOCLABS_PROJECT_DIR")+"/"+filelist_name+"/html"
     print(outdir)
-    html_scipt_dir = os.getenv("SOCTOOLS_FLOW_DIR")+"/bin/htmlgen"
+    html_scipt_dir = os.getenv("SOCLABS_SOCTOOLS_FLOW_DIR")+"/bin/htmlgen"
     subprocess.run(["make","-C",html_scipt_dir,"gen_html","TOP_MODULE="+top_mod,"OUT_DIR="+outdir])
 
 def project_gen(args):
@@ -49,8 +49,8 @@ def project_gen(args):
         # Generate bootrom
         bootrom_gen()
         # Find all filelist in project filelist directory
-        for filelist in os.listdir(os.getenv("PROJECT_DIR")+"/flist/project"):
-            filelist_path = os.getenv("PROJECT_DIR")+"/flist/project/"+filelist
+        for filelist in os.listdir(os.getenv("SOCLABS_PROJECT_DIR")+"/flist/project"):
+            filelist_path = os.getenv("SOCLABS_PROJECT_DIR")+"/flist/project/"+filelist
             html_gen(filelist_path)
     else:
         if args.bootrom is True:
@@ -61,7 +61,7 @@ def project_gen(args):
         
 if __name__ == "__main__":
     # Capture Arguments from Command Line
-    parser = argparse.ArgumentParser(description='Generates HTML based on all filelist in PROJECT_DIR/flist/project')
+    parser = argparse.ArgumentParser(description='Generates HTML based on all filelist in SOCLABS_PROJECT_DIR/flist/project')
     parser.add_argument("-f", "--filelist", type=str, help="Generate only from this List", required=False)
     parser.add_argument("-b", "--bootrom", action='store_true', help="Generate Bootrom first", required=False)
     parser.add_argument("-o", "--output", type=str, help="Output Filelist location", required=False)
