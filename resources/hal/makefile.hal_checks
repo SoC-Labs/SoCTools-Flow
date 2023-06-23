@@ -35,3 +35,18 @@ LINT_NOCHECK += -nocheck CDWARN
 
 # TODO: Control Characters (May need to be investigated!)
 LINT_NOCHECK += -nocheck CTLCHR
+
+# Large Arithmetic isn't Illegal
+LINT_NOCHECK += -nocheck LRGOPR
+
+# Begin/End Blocks don't have names
+LINT_NOCHECK += -nocheck NOBLKN
+
+# Numerical Value Suffix on wires (not an issue)
+LINT_NOCHECK += -nocheck NUMSUF
+
+# Active Low Naming Convention Not Used
+LINT_NOCHECK += -nocheck ALOWID
+
+# Parameter Naming Length Conventions not used
+LINT_NOCHECK += -nocheck IDLENG
