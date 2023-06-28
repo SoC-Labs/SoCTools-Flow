@@ -72,11 +72,11 @@ def read_list(filelist):
                     if file.endswith(verilog_extensions): 
                         compiled_filelist.append(env_var_substitute(line_list[1])+"/"+str(file))
             
-            elif line_list[0].startswith("-incdir "):
+            elif line_list[0].startswith("+incdir+"):
                 # Append to filelist
-                for file in os.listdir(env_var_substitute(line_list[0].lstrip("-incdir "))):
+                for file in os.listdir(env_var_substitute(line_list[0].lstrip("+incdir+"))):
                     if file.endswith(verilog_extensions): 
-                        compiled_filelist.append(env_var_substitute(line_list[0].lstrip("-incdir "))+"/"+str(file))
+                        compiled_filelist.append(env_var_substitute(line_list[0].lstrip("+incdir+"))+"/"+str(file))
                 
             # If file list a verilog file
             elif line_list[0].endswith(verilog_extensions):

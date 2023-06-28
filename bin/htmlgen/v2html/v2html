@@ -547,7 +547,7 @@ Verilog like options:
 
   +define: Specify a define for use when processing, can be either:
             +define+NAME or +define+NAME=VALUE
-  +incdir: Specify a directory to search for includes -incdir DIR_NAME
+  +incdir: Specify a directory to search for includes +incdir+DIR_NAME
   -y     : Specify a library to search for modules eg: -y DIR_NAME
   +libext: Specify a the extension for libraries eg: +libext+.v or +libext+.v+.V
   -v     : Specify a library file (same as putting the file without -v)
@@ -599,7 +599,7 @@ Ignored options:
 
 example:
   v2html -hc "Our Chip" -o /users/www/p/html -m Joe_Blogs\@jb.com
-     -incdir /p/includes -y /p/verilog +libext+.v+.V /p/verilog/chip_top.v
+     +incdir+/p/includes -y /p/verilog +libext+.v+.V /p/verilog/chip_top.v
 
 See http://www.burbleland.com/v2html/v2html.html for more details
 
