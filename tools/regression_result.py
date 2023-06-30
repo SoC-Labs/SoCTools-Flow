@@ -41,6 +41,7 @@ def regression_results(results_file):
     print("--------------------")
     print(f"PASSES: {passes}/{test_num}")
     print(f"SKIPS: {skipped}/{test_num}")
+    print(f"FAILS: {fails}/{test_num}")
          
 if __name__ == "__main__":
     file = str(sys.argv[1])
