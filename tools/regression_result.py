@@ -17,6 +17,7 @@ def regression_results(results_file):
     data_lines = file.readlines()
     
     passes   = 0
+    skipped  = 0
     fails    = 0
     test_num = 0
     table_data = []
@@ -29,6 +30,9 @@ def regression_results(results_file):
         elif "FAILED" in line:
             fails += 1
             test_num += 1
+        elif "SKIPPED" in line:
+            skipped += 1
+            test_num += 1
         
         line_data = line.split(" ")
         table_data.append(line_data)
@@ -36,6 +40,7 @@ def regression_results(results_file):
     print(tabulate(table_data, headers=["Test Name", "Result"]))
     print("--------------------")
     print(f"PASSES: {passes}/{test_num}")
+    print(f"SKIPS: {skipped}/{test_num}")
          
 if __name__ == "__main__":
     file = str(sys.argv[1])
