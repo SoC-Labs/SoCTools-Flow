@@ -44,13 +44,14 @@ def env_var_substitute(path, tcl=False):
     sub_path = os.path.expandvars(sub_path)
     return sub_path
 
-def read_list(filelist, first, args):
+def read_list(filelist, first, incdirs, args):
     # Create Filelist List Structure
     compiled_filelist = []
     # Open Filelist and Read Lines
     f = open(filelist, "r")
     filelines = f.readlines()
     f.close()
+    hdl_files = []
     # Remove Black Lines from list
     filelines = [x.rstrip("\n") for x in filelines]
     filelines = [x for x in filelines if x != ""]
@@ -67,7 +68,7 @@ def read_list(filelist, first, args):
                     print(line_list[1]+" is in the exclusions list")
                 else:
                     print(line_list[1])
-                    temp_list, first = read_list(env_var_substitute(line_list[1]), first, args)
+                    temp_list, first, incdirs = read_list(env_var_substitute(line_list[1]), first, incdirs, args)
                     compiled_filelist += temp_list
 
             elif line_list[0] == "-y":
@@ -88,6 +89,10 @@ def read_list(filelist, first, args):
             
             elif line_list[0].startswith("+incdir+"):
                 # Append to filelist
+                if args.absolute == True:
+                    incdirs.append(env_var_substitute(line_list[0].lstrip("+incdir+")))
+                else:
+                    incdirs.append(line_list[0].lstrip("+incdir+"))
                 if args.tcl == False:
                     for file in os.listdir(env_var_substitute(line_list[0].lstrip("+incdir+"))):
                         if file.endswith(verilog_extensions): 
@@ -115,17 +120,36 @@ def read_list(filelist, first, args):
                 # Append to filelist
                 if args.absolute == True:
                     if args.tcl == True:
-                        compiled_filelist.append("read_verilog " + str(env_var_substitute(line_list[0], tcl=True)).replace("$","$env"))
+                        hdl_files.append(str(env_var_substitute(line_list[0], tcl=True)).replace("$","$env"))
+                        # compiled_filelist.append("read_verilog " + str(env_var_substitute(line_list[0], tcl=True)).replace("$","$env"))
                     else:
                         compiled_filelist.append(env_var_substitute(line_list[0]))
                 else:
                     if args.tcl == True:
+                        hdl_files.append(str(line_list[0]).replace("$","$env"))
                         # compiled_filelist.append("read_verilog " + str(line_list[0]).replace("$","$env"))
-                        compiled_filelist.append("add_files -norecurse -scan_for_includes " + str(line_list[0]).replace("$","$env"))
+                        # compiled_filelist.append("add_files -norecurse -scan_for_includes -copy_to vivado/built_mcu_fpga/MCULIB" + str(line_list[0]).replace("$","$env"))
                     else:
                         compiled_filelist.append(line_list[0])
-    return compiled_filelist, first
-            
+    if len(hdl_files) > 0:
+        # temp_str = 'add_files -norecurse -scan_for_includes "'
+        temp_str = 'add_files -norecurse -force -copy_to vivado/built_mcu_fpga/MCULIB "'
+        for file in hdl_files:
+            temp_str += file + " "
+        temp_str += '"'
+        compiled_filelist.append(temp_str)
+    return compiled_filelist, first, incdirs
+
+def incdir_compile(args, incdirs):
+    temp_str = ""
+    if len(incdirs) > 0:
+        temp_str = 'set_property include_dirs "'
+        for directory in incdirs:
+            temp_dir = str(directory).replace("$","$env")
+            temp_str += " " + temp_dir
+        temp_str += '" [current_fileset]'
+    return temp_str
+        
 
 def filelist_compile(args):
     input_filelist = args.filelist
@@ -133,14 +157,19 @@ def filelist_compile(args):
     print("------------------")
     print("Compiling Filelist")
     print("------------------")
+    incdirs = []
     # Read in filelist and add newlines to paths
-    filelist, first = read_list(input_filelist, True, args)
+    filelist, first, incdirs = read_list(input_filelist, True, incdirs, args)
     filelist = [x+"\n" for x in filelist]
     # Create string of all paths to write out
     filelist_str = filelist_header if (args.tcl == False) else filelist_header.replace("//","#")
     for path in filelist: filelist_str += path
     print("Compile Done")
     print("------------------")
+    if args.tcl == True:
+        print("Compile Incdirs")   
+        print("------------------")
+        filelist_str += incdir_compile(args, incdirs)
     # Write out output filelist
     f_outlist = open(output_filelist, "w")
     f_outlist.write(filelist_str)
