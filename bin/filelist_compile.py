@@ -104,7 +104,11 @@ def read_list(filelist, first, args):
                         else:
                             compiled_filelist.append("set search_path [ concat $search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + " ]")
                     else:
-                        compiled_filelist.append(str(line_list[0].lstrip("+incdir+")).replace("$","$env")+"/")
+                        if first == True:
+                            compiled_filelist.append("set search_path " + str(line_list[0].lstrip("+incdir+")).replace("$","$env"))
+                            first = False
+                        else:
+                            compiled_filelist.append("set search_path [ concat $search_path " + str(line_list[0].lstrip("+incdir+")).replace("$","$env") + " ]")
                 
             # If file list a verilog file
             elif line_list[0].endswith(verilog_extensions):
@@ -116,7 +120,8 @@ def read_list(filelist, first, args):
                         compiled_filelist.append(env_var_substitute(line_list[0]))
                 else:
                     if args.tcl == True:
-                        compiled_filelist.append("read_verilog " + str(line_list[0]).replace("$","$env"))
+                        # compiled_filelist.append("read_verilog " + str(line_list[0]).replace("$","$env"))
+                        compiled_filelist.append("add_files -norecurse -scan_for_includes " + str(line_list[0]).replace("$","$env"))
                     else:
                         compiled_filelist.append(line_list[0])
     return compiled_filelist, first
