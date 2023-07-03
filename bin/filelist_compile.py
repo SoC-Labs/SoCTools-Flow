@@ -65,9 +65,10 @@ def read_list(filelist, first, incdirs, args):
             if line_list[0] == "-f":
                 # Recursively call this function and append list to this compiled Filelist
                 if any(ext in line_list[1] for ext in filelist_exclusions) and args.exclude == True:
-                    print(line_list[1]+" is in the exclusions list")
+                    # print(line_list[1]+" is in the exclusions list")
+                    pass
                 else:
-                    print(line_list[1])
+                    # print(line_list[1])
                     temp_list, first, incdirs = read_list(env_var_substitute(line_list[1]), first, incdirs, args)
                     compiled_filelist += temp_list
 
@@ -121,19 +122,16 @@ def read_list(filelist, first, incdirs, args):
                 if args.absolute == True:
                     if args.tcl == True:
                         hdl_files.append(str(env_var_substitute(line_list[0], tcl=True)).replace("$","$env"))
-                        # compiled_filelist.append("read_verilog " + str(env_var_substitute(line_list[0], tcl=True)).replace("$","$env"))
                     else:
                         compiled_filelist.append(env_var_substitute(line_list[0]))
                 else:
                     if args.tcl == True:
                         hdl_files.append(str(line_list[0]).replace("$","$env"))
-                        # compiled_filelist.append("read_verilog " + str(line_list[0]).replace("$","$env"))
-                        # compiled_filelist.append("add_files -norecurse -scan_for_includes -copy_to vivado/built_mcu_fpga/MCULIB" + str(line_list[0]).replace("$","$env"))
                     else:
                         compiled_filelist.append(line_list[0])
     if len(hdl_files) > 0:
         # temp_str = 'add_files -norecurse -scan_for_includes "'
-        temp_str = 'add_files -norecurse -force -copy_to vivado/built_mcu_fpga/MCULIB "'
+        temp_str = f'add_files -norecurse -force -copy_to {args.rtldir} "'
         for file in hdl_files:
             temp_str += file + " "
         temp_str += '"'
@@ -154,9 +152,7 @@ def incdir_compile(args, incdirs):
 def filelist_compile(args):
     input_filelist = args.filelist
     output_filelist = args.output
-    print("------------------")
     print("Compiling Filelist")
-    print("------------------")
     incdirs = []
     # Read in filelist and add newlines to paths
     filelist, first, incdirs = read_list(input_filelist, True, incdirs, args)
@@ -164,11 +160,8 @@ def filelist_compile(args):
     # Create string of all paths to write out
     filelist_str = filelist_header if (args.tcl == False) else filelist_header.replace("//","#")
     for path in filelist: filelist_str += path
-    print("Compile Done")
-    print("------------------")
     if args.tcl == True:
-        print("Compile Incdirs")   
-        print("------------------")
+
         filelist_str += incdir_compile(args, incdirs)
     # Write out output filelist
     f_outlist = open(output_filelist, "w")
@@ -183,5 +176,6 @@ if __name__ == "__main__":
     parser.add_argument("-e", "--exclude", action='store_true', help="Exclude filists including these strings")
     parser.add_argument("-t", "--tcl", action='store_true', help="Generate a TCL Script")
     parser.add_argument("-a", "--absolute", action='store_true', help="Substitute environment Variables with Absolute Path")
+    parser.add_argument("-r", "--rtldir", type=str, help="Directory where RTL Source will be copied to in TCL mode")
     args = parser.parse_args()
     filelist_compile(args)
