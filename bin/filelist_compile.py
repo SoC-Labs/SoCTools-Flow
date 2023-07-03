@@ -99,7 +99,7 @@ def read_list(filelist, first, args):
                 else:
                     if args.absolute == True:
                         if first == True:
-                            compiled_filelist.append("set search_path [ $search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + " ]")
+                            compiled_filelist.append("set search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env"))
                             first = False
                         else:
                             compiled_filelist.append("set search_path [ concat $search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + " ]")
