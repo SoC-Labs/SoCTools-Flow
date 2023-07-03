@@ -44,7 +44,7 @@ def env_var_substitute(path, tcl=False):
     sub_path = os.path.expandvars(sub_path)
     return sub_path
 
-def read_list(filelist, args):
+def read_list(filelist, first, args):
     # Create Filelist List Structure
     compiled_filelist = []
     # Open Filelist and Read Lines
@@ -67,7 +67,8 @@ def read_list(filelist, args):
                     print(line_list[1]+" is in the exclusions list")
                 else:
                     print(line_list[1])
-                    compiled_filelist += read_list(env_var_substitute(line_list[1]), args)
+                    temp_list, first = read_list(env_var_substitute(line_list[1]), first, args)
+                    compiled_filelist += temp_list
 
             elif line_list[0] == "-y":
                 # Append to filelist
@@ -97,7 +98,11 @@ def read_list(filelist, args):
                                 compiled_filelist.append(line_list[0].lstrip("+incdir+")+"/"+str(file))
                 else:
                     if args.absolute == True:
-                        compiled_filelist.append("set search_path [ concat $search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + " ]")
+                        if first == True:
+                            compiled_filelist.append("set search_path [ $search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + " ]")
+                            first = False
+                        else:
+                            compiled_filelist.append("set search_path [ concat $search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + " ]")
                     else:
                         compiled_filelist.append(str(line_list[0].lstrip("+incdir+")).replace("$","$env")+"/")
                 
@@ -114,7 +119,7 @@ def read_list(filelist, args):
                         compiled_filelist.append("read_verilog " + str(line_list[0]).replace("$","$env"))
                     else:
                         compiled_filelist.append(line_list[0])
-    return compiled_filelist
+    return compiled_filelist, first
             
 
 def filelist_compile(args):
@@ -124,7 +129,7 @@ def filelist_compile(args):
     print("Compiling Filelist")
     print("------------------")
     # Read in filelist and add newlines to paths
-    filelist = read_list(input_filelist, args)
+    filelist, first = read_list(input_filelist, True, args)
     filelist = [x+"\n" for x in filelist]
     # Create string of all paths to write out
     filelist_str = filelist_header if (args.tcl == False) else filelist_header.replace("//","#")
