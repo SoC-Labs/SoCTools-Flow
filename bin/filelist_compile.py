@@ -26,7 +26,7 @@ filelist_header = """//---------------------------------------------------------
 //
 // David Mapstone (d.a.mapstone@soton.ac.uk)
 //
-// Copyright � 2021-3, SoC Labs (www.soclabs.org)
+// Copyright 2021-3, SoC Labs (www.soclabs.org)
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 // Abstract : Verilog Command File with expanded system variables
@@ -127,7 +127,7 @@ def filelist_compile(args):
     filelist = read_list(input_filelist, args)
     filelist = [x+"\n" for x in filelist]
     # Create string of all paths to write out
-    filelist_str = filelist_header
+    filelist_str = filelist_header if (args.tcl == False) else filelist_header.replace("//","#")
     for path in filelist: filelist_str += path
     print("Compile Done")
     print("------------------")
