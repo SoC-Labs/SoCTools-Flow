@@ -22,7 +22,7 @@ set component_lib $env(FPGA_COMPONENT_LIB)
 source $env(FPGA_COMPONENT_FILELIST)
 
 # Set Top-level
-set_property top $env(FPGA_DESIGN_TOP) [current_fileset]
+set_property top $env(FPGA_COMPONENT_TOP) [current_fileset]
 
 #
 # STEP#1: run synthesis, report utilization and timing estimates, write checkpoint design
