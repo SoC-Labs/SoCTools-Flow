@@ -152,8 +152,8 @@ def defines_compile(args):
     temp_str = ""
     if len(args.defines) > 0:
         for define in args.defines:
-            temp_str += "set_property generic {" + str(define) + "} [current_fileset]\n"
-            temp_str += "set_property verilog_define {" + str(define) + "} [current_fileset]\n"
+            temp_str += 'set_property generic "' + str(define) + '" [current_fileset]\n'
+            temp_str += 'set_property verilog_define "' + str(define) + '" [current_fileset]\n'
     return temp_str
     
 def filelist_compile(args):
@@ -166,10 +166,13 @@ def filelist_compile(args):
     filelist = [x+"\n" for x in filelist]
     # Create string of all paths to write out
     filelist_str = filelist_header if (args.tcl == False) else filelist_header.replace("//","#")
+    if args.tcl == True:
+        # filelist_str += incdir_compile(args, incdirs) + "\n"
+        filelist_str += defines_compile(args)
     for path in filelist: filelist_str += path
     if args.tcl == True:
         filelist_str += incdir_compile(args, incdirs) + "\n"
-        filelist_str += defines_compile(args)
+        # filelist_str += defines_compile(args)
     # Write out output filelist
     f_outlist = open(output_filelist, "w")
     f_outlist.write(filelist_str)
