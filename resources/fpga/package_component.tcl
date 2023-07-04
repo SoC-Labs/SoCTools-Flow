@@ -37,7 +37,7 @@ ipx::edit_ip_in_project -upgrade true -name tmp_edit_project -directory  $compon
 
 update_compile_order -fileset sources_1
 set_property ipi_drc {ignore_freq_hz true} [ipx::current_core]
-ipx::merge_project_changes files [ipx::current_core]
+ipx::merge_project_changes -verbose files [ipx::current_core]
 
 set_property core_revision $env(FPGA_CORE_REV) [ipx::current_core]
 ipx::update_source_project_archive -component [ipx::current_core]
