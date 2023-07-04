@@ -148,7 +148,14 @@ def incdir_compile(args, incdirs):
         temp_str += '" [current_fileset]'
     return temp_str
         
-
+def defines_compile(args):
+    temp_str = ""
+    if len(args.defines) > 0:
+        for define in args.defines:
+            temp_str += "set_property generic {" + str(define) + "} [current_fileset]\n"
+            temp_str += "set_property verilog_define {" + str(define) + "} [current_fileset]\n"
+    return temp_str
+    
 def filelist_compile(args):
     input_filelist = args.filelist
     output_filelist = args.output
@@ -161,8 +168,8 @@ def filelist_compile(args):
     filelist_str = filelist_header if (args.tcl == False) else filelist_header.replace("//","#")
     for path in filelist: filelist_str += path
     if args.tcl == True:
-
-        filelist_str += incdir_compile(args, incdirs)
+        filelist_str += incdir_compile(args, incdirs) + "\n"
+        filelist_str += defines_compile(args)
     # Write out output filelist
     f_outlist = open(output_filelist, "w")
     f_outlist.write(filelist_str)
@@ -177,5 +184,6 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--tcl", action='store_true', help="Generate a TCL Script")
     parser.add_argument("-a", "--absolute", action='store_true', help="Substitute environment Variables with Absolute Path")
     parser.add_argument("-r", "--rtldir", type=str, help="Directory where RTL Source will be copied to in TCL mode")
+    parser.add_argument('-d', '--defines', nargs='+', default=[])
     args = parser.parse_args()
     filelist_compile(args)
