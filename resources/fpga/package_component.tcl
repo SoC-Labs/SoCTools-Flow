@@ -21,9 +21,6 @@ set component_lib $env(FPGA_COMPONENT_LIB)
 # Read in TCL Filelist
 source $env(FPGA_COMPONENT_FILELIST)
 
-# Read in Design Defines
-source $env(FPGA_COMPONENT_DEFINES)
-
 # Set Top-level
 set_property top $env(FPGA_DESIGN_TOP) [current_fileset]
 
