@@ -37,11 +37,11 @@ def html_gen(filelist_path):
     print("Generating HTML for: "+filelist_name)
     # Find Top-level module name
     top_mod = top_mod_find(filelist_path)
+    print(f"Top-level Module is: {top_mod}")
     # Work out output Directory
     outdir = os.getenv("SOCLABS_PROJECT_DIR")+"/html/"+filelist_name
-    print(outdir)
     html_scipt_dir = os.getenv("SOCLABS_SOCTOOLS_FLOW_DIR")+"/bin/htmlgen"
-    subprocess.run(["make","-C",html_scipt_dir,"gen_html","TOP_MODULE="+top_mod,"OUT_DIR="+outdir])
+    subprocess.run(["make","-C",html_scipt_dir,"gen_html","TOP_MODULE="+top_mod,"OUT_DIR="+outdir,"FILELIST="+filelist_path])
 
 def project_gen(args):
     # Has filelist option been passed to script
