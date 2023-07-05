@@ -1,10 +1,4 @@
 #!/bin/bash
 
 # Update all Submodules to latest commit
-cd $SOCLABS_DESIGN_ROOT; git submodule foreach --recursive git pull
-# for d in $SOCLABS_DESIGN_ROOT/* ; do
-#     if [ -f "$d/.git" ]; then
-#         echo "Git Pulling $d"
-#         cd $d; git pull; cd ..
-#     fi
-# done
+cd $SOCLABS_DESIGN_ROOT; git pull; git submodule foreach --recursive git pull
