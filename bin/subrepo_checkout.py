@@ -30,6 +30,7 @@ def read_branchfile(branchfile):
     return sub_repos
     
 def repo_checkout(directory, branch):
+    print(f"Checking out {directory} to branch {branch}")
     os.system(f"cd {directory}; git checkout {branch}")
     
 if __name__ == "__main__":
