@@ -49,9 +49,9 @@ def project_gen(args):
         # Generate bootrom
         bootrom_gen()
         # Find all filelist in project filelist directory
-        for filelist in os.listdir(os.getenv("SOCLABS_PROJECT_DIR")+"/flist/project"):
-            filelist_path = os.getenv("SOCLABS_PROJECT_DIR")+"/flist/project/"+filelist
-            html_gen(filelist_path)
+        # for filelist in os.listdir(os.getenv("SOCLABS_PROJECT_DIR")+"/flist/project"):
+        filelist_path = os.getenv("SOCLABS_PROJECT_DIR")+"/flist/project/"+"top.flist"
+        html_gen(filelist_path)
     else:
         if args.bootrom is True:
             # Generate bootrom
