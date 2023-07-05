@@ -28,7 +28,7 @@ def top_mod_find(filelist):
 
 def bootrom_gen():
     # Runs Bootrom generation script in NanoSoC Directory
-    bootrom_scipt_dir = os.getenv("SOCLABS_NANOSOC_TECH_DIR")+"/system"
+    bootrom_scipt_dir = os.getenv("SOCLABS_NANOSOC_TECH_DIR")
     subprocess.run(["make","-C",bootrom_scipt_dir,"bootrom"])
 
 def html_gen(filelist_path):
@@ -38,7 +38,7 @@ def html_gen(filelist_path):
     # Find Top-level module name
     top_mod = top_mod_find(filelist_path)
     # Work out output Directory
-    outdir = os.getenv("SOCLABS_PROJECT_DIR")+"/"+filelist_name+"/html"
+    outdir = os.getenv("SOCLABS_PROJECT_DIR")+"/html/"+filelist_name
     print(outdir)
     html_scipt_dir = os.getenv("SOCLABS_SOCTOOLS_FLOW_DIR")+"/bin/htmlgen"
     subprocess.run(["make","-C",html_scipt_dir,"gen_html","TOP_MODULE="+top_mod,"OUT_DIR="+outdir])

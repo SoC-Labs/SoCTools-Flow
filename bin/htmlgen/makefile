@@ -24,6 +24,8 @@ OUTPUT_FILELIST := $(OUT_DIR)/filelist.flist
 gen_html:
 	@echo building HTML tree
 	@mkdir -p $(OUT_DIR)/build
+	@echo Output Directory is $(OUT_DIR)/build
+	$(MAKE) -C $(SOCLABS_NANOSOC_TECH_DIR) defs_gen
 	@(cd $(OUT_DIR)/build; \
 	rm *.html; rm *.gif; \
 	$(SOCLABS_SOCTOOLS_FLOW_DIR)/bin/filelist_compile.py -ea -f $(FILELIST) -o $(OUTPUT_FILELIST) ; \
