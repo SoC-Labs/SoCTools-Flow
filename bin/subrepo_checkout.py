@@ -11,6 +11,8 @@
 import argparse
 import os
 
+from os.path import exists
+
 class git_repo():
     def __init__(self, directory, branch):
         self.directory = directory
@@ -28,10 +30,19 @@ def read_branchfile(branchfile):
                 sub_repos.append(git_repo(repo[0],repo[1]))
             
     return sub_repos
+
+def find_branchfile(directory, branchfile):
+    if exists(f"{directory}/{branchfile}"):
+        print(f"Found Branchfile in {directory}")
+        sub_repos = read_branchfile(f"{directory}/{branchfile}")
+        for repo in sub_repos:
+            print(f"Subrepo found: {repo.directory}")
+            repo_checkout(f"{directory}/{repo.directory}", repo.branch, branchfile)
     
-def repo_checkout(directory, branch):
+def repo_checkout(directory, branch, branchfile):
     print(f"Checking out {directory} to branch {branch}")
     os.system(f"cd {directory}; git checkout {branch}")
+    find_branchfile(directory, branchfile)
     
 if __name__ == "__main__":
     # Capture Arguments from Command Line
@@ -41,4 +52,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     sub_repos = read_branchfile(args.branchfile)
     for repo in sub_repos:
-        repo_checkout(repo.directory, repo.branch)
+        repo_checkout(repo.directory, repo.branch, args.branchfile)
