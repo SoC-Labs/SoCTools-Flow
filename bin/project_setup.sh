@@ -9,6 +9,7 @@
 # Copyright  2023, SoC Labs (www.soclabs.org)
 #-----------------------------------------------------------------------------
 #!/bin/bash
+OPTIND=1
 
 # Get Root Location of Design Structure
 if [ -z $SOCLABS_DESIGN_ROOT ]; then
@@ -67,8 +68,20 @@ else
     export PATH
 fi
 
+# Parse Command line options
+force=false
+while getopts "f" arg; do
+    case $arg in
+        f) # Force socinit
+            force=true
+            echo "Forcing Reinitialisation of Project"
+            ;;
+    esac
+done
+
+
 # Check cloned repository has been initialised
-if [ ! -f $SOCLABS_PROJECT_DIR/.socinit ]; then
+if [ ! -f $SOCLABS_PROJECT_DIR/.socinit ] || [ $force = true ]; then
     echo "Running First Time Repository Initialisation"
     # Source environment variables for all submodules
     cd $SOCLABS_DESIGN_ROOT
