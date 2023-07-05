@@ -6,12 +6,13 @@
 #
 # David Mapstone (d.a.mapstone@soton.ac.uk)
 #
-# Copyright � 2021-3, SoC Labs (www.soclabs.org)
+# Copyright 2021-3, SoC Labs (www.soclabs.org)
 #-----------------------------------------------------------------------------
 
 from tabulate import tabulate
 import sys
 
+# Display Regression Results in a table
 def regression_results(results_file):
     file = open(results_file,"r")
     data_lines = file.readlines()
@@ -42,7 +43,13 @@ def regression_results(results_file):
     print(f"PASSES: {passes}/{test_num}")
     print(f"SKIPS: {skipped}/{test_num}")
     print(f"FAILS: {fails}/{test_num}")
+    return fails
          
 if __name__ == "__main__":
     file = str(sys.argv[1])
-    regression_results(file)
+    fails = regression_results(file)
+    # Generate Exit Code depending on Errors
+    if fails > 0:
+        sys.exit(1)
+    else:
+        sys.exit(0)
