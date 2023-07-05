@@ -41,7 +41,7 @@ def find_branchfile(directory, branchfile):
     
 def repo_checkout(directory, branch, branchfile):
     print(f"Checking out {directory} to branch {branch}")
-    os.system(f"cd {directory}; git checkout {branch}")
+    os.system(f"cd {directory}; git checkout --recurse-submodules {branch}")
     find_branchfile(directory, branchfile)
     
 if __name__ == "__main__":
