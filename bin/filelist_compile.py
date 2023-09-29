@@ -113,7 +113,7 @@ def read_list(filelist, first, incdirs, args):
                                 elif args.makefile == True:
                                     compiled_filelist.append("VERILOG_SOURCES += " + str(line_list[1]).replace("$","$env")+"/"+str(file))
                                 else:
-                                    compiled_filelist.append("read_verilog " + str(line_list[1])+"/"+str(file))
+                                    compiled_filelist.append("read_verilog " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                             else:
                                 compiled_filelist.append(line_list[1]+"/"+str(file))
             
