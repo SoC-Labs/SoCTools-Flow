@@ -34,6 +34,13 @@ filelist_header = """//---------------------------------------------------------
 
 """
 
+def file_contains_module(f):
+    if 'module' in open(f).read():
+       return True
+    else:
+       print('### -y strip: no module in ' + f)
+       return False
+
 def env_var_substitute(path, tcl=False, synthesis=False):
     # Interpret the path and remove brackets from path
     if tcl == False:
@@ -77,7 +84,7 @@ def read_list(filelist, first, incdirs, args):
             elif line_list[0] == "-y":
                 # Append to filelist
                 for file in os.listdir(env_var_substitute(line_list[1])):
-                    if file.endswith(verilog_extensions): 
+                    if (file.endswith(verilog_extensions) and file_contains_module(str(env_var_substitute(line_list[1], tcl=False)).replace("$","$env")+"/"+str(file))): 
                         # Append to filelist
                         if args.absolute == True:
                             if args.tcl == True:
@@ -87,7 +94,9 @@ def read_list(filelist, first, incdirs, args):
                                     else:
                                         compiled_filelist.append("read_hdl " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                                 elif args.synthesis ==True:
-                                    compiled_filelist.append("cp " + str(env_var_substitute((line_list[1])+"/"+str(file), tcl=True, synthesis=True)))
+                                    compiled_filelist.append("cp -p " + str(env_var_substitute((line_list[1])+"/"+str(file), tcl=True, synthesis=True)))
+                                elif args.makefile == True:
+                                    compiled_filelist.append("VERILOG_SOURCES += " + str(env_var_substitute((line_list[1])+"/"+str(file), synthesis=True)))
                                 else:
                                     compiled_filelist.append("read_verilog " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                             else:
@@ -98,9 +107,11 @@ def read_list(filelist, first, incdirs, args):
                                     if file.endswith(".sv"):
                                         compiled_filelist.append("read_hdl -language sv " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))  
                                     else:
-                                        compiled_filelist.append("read_hdl " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))  
+                                        compiled_filelist.append("read_hdl " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                                 elif args.synthesis == True:
-                                    compiled_filelist.append("cp " + str(line_list[1])+"/"+str(file))  
+                                    compiled_filelist.append("cp -p" + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
+                                elif args.makefile == True:
+                                    compiled_filelist.append("VERILOG_SOURCES += " + str(line_list[1]).replace("$","$env")+"/"+str(file))
                                 else:
                                     compiled_filelist.append("read_verilog " + str(line_list[1])+"/"+str(file))
                             else:
@@ -158,7 +169,8 @@ def read_list(filelist, first, incdirs, args):
                 #             first = False
                 #         else:
                 #             compiled_filelist.append("set search_path [ concat $search_path " + str(line_list[0].lstrip("+incdir+")).replace("$","$env") + " ]")
-                elif args.makefile == False:
+                ##elif args.makefile == False:
+                elif ((args.makefile == False) and (args.vfiles == False)):
                     for file in os.listdir(env_var_substitute(line_list[0].lstrip("+incdir+"))):
                         if file.endswith(verilog_extensions): 
                             # Append to filelist
@@ -204,7 +216,7 @@ def read_list(filelist, first, incdirs, args):
         elif args.synthesis ==True:
             temp_str=""
             for file in hdl_files:
-                temp_str += f'cp {file}  {args.rtldir}/\n'
+                temp_str += f'cp -p {file}  {args.rtldir}/\n'
             compiled_filelist.append(temp_str)                                            
         else:
             temp_str = f'add_files -norecurse -force -copy_to {args.rtldir} "'
@@ -232,6 +244,10 @@ def incdir_compile(args, incdirs):
         if len(incdirs) > 0:
             for directory in incdirs:
                 temp_str += "EXTRA_ARGS += +incdir+" + str(directory) + "\n"
+    elif args.vfiles == True:
+        if len(incdirs) > 0:
+            for directory in incdirs:
+                temp_str += "+incdir+" + str(directory) + "\n"
     return temp_str
         
 def defines_compile(args):
@@ -277,6 +293,7 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--synthesis", action = 'store_true', help ="Generate bash script for copying flist to synthesis")
     parser.add_argument("-m", "--makefile", action='store_true', help="Generate a Makefile RTL Sources File")
     parser.add_argument("-a", "--absolute", action='store_true', help="Substitute environment Variables with Absolute Path")
+    parser.add_argument("-v", "--vfiles", action='store_true', help="Generate a vc filelist")
     parser.add_argument("-r", "--rtldir", type=str, help="Directory where RTL Source will be copied to in TCL mode")
     parser.add_argument('-d', '--defines', nargs='+', default=[])
     args = parser.parse_args()
