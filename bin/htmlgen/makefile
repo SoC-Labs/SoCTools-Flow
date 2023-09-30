@@ -27,7 +27,8 @@ gen_html:
 	@echo Output Directory is $(OUT_DIR)/build
 	@echo Filelist is $(FILELIST)
 	$(MAKE) -C $(SOCLABS_NANOSOC_TECH_DIR) gen_defs
+	$(MAKE) -C $(SOCLABS_NANOSOC_TECH_DIR) bootrom
 	@(cd $(OUT_DIR)/build; \
 	rm *.html; rm *.gif; \
-	$(SOCLABS_SOCTOOLS_FLOW_DIR)/bin/filelist_compile.py -ea -f $(FILELIST) -o $(OUTPUT_FILELIST) ; \
+	$(SOCLABS_SOCTOOLS_FLOW_DIR)/bin/filelist_compile.py -eanv -f $(FILELIST) -o $(OUTPUT_FILELIST) ; \
 	$(SOCLABS_SOCTOOLS_FLOW_DIR)/bin/htmlgen/v2html/v2html -f $(OUTPUT_FILELIST) -ht $(TOP_MODULE) ; )

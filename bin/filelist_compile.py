@@ -115,7 +115,8 @@ def read_list(filelist, first, incdirs, args):
                                 else:
                                     compiled_filelist.append("read_verilog " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                             else:
-                                compiled_filelist.append(line_list[1]+"/"+str(file))
+                                if (file.endswith(".v") or (file.endswith(".sv") and (args.html == False))):
+                                    compiled_filelist.append(line_list[1]+"/"+str(file))
             
             elif line_list[0].startswith("+incdir+"):
                 # Append to filelist
@@ -172,7 +173,7 @@ def read_list(filelist, first, incdirs, args):
                 ##elif args.makefile == False:
                 elif ((args.makefile == False) and (args.vfiles == False)):
                     for file in os.listdir(env_var_substitute(line_list[0].lstrip("+incdir+"))):
-                        if file.endswith(verilog_extensions): 
+                        if (file.endswith(".v") or (file.endswith(".sv") and (args.html == False))):
                             # Append to filelist
                             if args.absolute == True:
                                 compiled_filelist.append(env_var_substitute(line_list[0].lstrip("+incdir+"))+"/"+str(file))
@@ -199,10 +200,11 @@ def read_list(filelist, first, incdirs, args):
                     else:
                         compiled_filelist.append("VERILOG_SOURCES += " + str(line_list[0]))
                 else:
-                    if args.absolute == True:
-                        compiled_filelist.append(env_var_substitute(line_list[0]))
-                    else:
-                        compiled_filelist.append(line_list[0])
+                    if (line_list[0].endswith(".v") or (line_list[0].endswith(".sv") and (args.html == False))):
+                        if args.absolute == True:
+                            compiled_filelist.append(env_var_substitute(line_list[0]))
+                        else:
+                            compiled_filelist.append(line_list[0])
     if len(hdl_files) > 0:
         # temp_str = 'add_files -norecurse -scan_for_includes "'
         if args.genus == True:
@@ -294,6 +296,7 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--makefile", action='store_true', help="Generate a Makefile RTL Sources File")
     parser.add_argument("-a", "--absolute", action='store_true', help="Substitute environment Variables with Absolute Path")
     parser.add_argument("-v", "--vfiles", action='store_true', help="Generate a vc filelist")
+    parser.add_argument("-n", "--html", action='store_true', help="No '.sv' - strip files as HTML wont render")
     parser.add_argument("-r", "--rtldir", type=str, help="Directory where RTL Source will be copied to in TCL mode")
     parser.add_argument('-d', '--defines', nargs='+', default=[])
     args = parser.parse_args()
