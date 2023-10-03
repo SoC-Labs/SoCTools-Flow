@@ -93,8 +93,11 @@ def read_list(filelist, first, incdirs, args):
                                         compiled_filelist.append("read_hdl -language sv " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                                     else:
                                         compiled_filelist.append("read_hdl " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
-                                elif args.synthesis ==True:
-                                    compiled_filelist.append("cp -p " + str(env_var_substitute((line_list[1])+"/"+str(file), tcl=True, synthesis=True)))
+                                elif args.dc ==True:
+                                    if file.endswith(".sv"):
+                                        compiled_filelist.append("analyze -format sverilog -lib WORK -define POWER_PINS " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
+                                    else:
+                                        compiled_filelist.append("analyze -format verilog -lib WORK -define POWER_PINS " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                                 elif args.makefile == True:
                                     compiled_filelist.append("VERILOG_SOURCES += " + str(env_var_substitute((line_list[1])+"/"+str(file), synthesis=True)))
                                 else:
@@ -108,8 +111,11 @@ def read_list(filelist, first, incdirs, args):
                                         compiled_filelist.append("read_hdl -language sv " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))  
                                     else:
                                         compiled_filelist.append("read_hdl " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
-                                elif args.synthesis == True:
-                                    compiled_filelist.append("cp -p" + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
+                                elif args.dc == True:
+                                    if file.endswith(".sv"):
+                                        compiled_filelist.append("analyze -format sverilog -lib WORK -define POWER_PINS " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
+                                    else:
+                                        compiled_filelist.append("analyze -format verilog -lib WORK -define POWER_PINS " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                                 elif args.makefile == True:
                                     compiled_filelist.append("VERILOG_SOURCES += " + str(line_list[1]).replace("$","$env")+"/"+str(file))
                                 else:
@@ -129,32 +135,32 @@ def read_list(filelist, first, incdirs, args):
                         if first == True:
                             if args.genus == True:
                                 compiled_filelist.append("set_db init_hdl_search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env"))
-                            elif args.synthesis == True:
-                                pass
+                            elif args.dc == True:
+                                compiled_filelist.append("set search_path [concat $search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + " ]")
                             else:
                                 compiled_filelist.append("set search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env"))
                             first = False
                         else:
                             if args.genus == True:
                                 compiled_filelist.append("set_db init_hdl_search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env"))
-                            elif args.synthesis == True:
-                                pass
+                            elif args.dc == True:
+                                compiled_filelist.append("set search_path [concat $search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + " ]")
                             else:
                                 compiled_filelist.append("set search_path [ concat $search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + " ]")
                     else:
                         if first == True:
                             if args.genus == True:
                                 compiled_filelist.append("set_db init_hdl_search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env"))
-                            elif args.synthesis == True:
-                                pass
+                            elif args.dc == True:
+                                compiled_filelist.append("set search_path [concat $search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + " ]")
                             else:
                                 compiled_filelist.append("set search_path " + str(line_list[0].lstrip("+incdir+")).replace("$","$env"))
                             first = False
                         else:
                             if args.genus == True:
                                 compiled_filelist.append("set_db init_hdl_search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env"))
-                            elif args.synthesis == True:
-                                pass
+                            elif args.dc == True:
+                                compiled_filelist.append("set search_path [concat $search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + " ]")
                             else:
                                 compiled_filelist.append("set search_path [ concat $search_path " + str(line_list[0].lstrip("+incdir+")).replace("$","$env") + " ]")
                 # elif args.makefile == True:
@@ -185,13 +191,13 @@ def read_list(filelist, first, incdirs, args):
                 # Append to filelist
                 if args.tcl == True:
                     if args.absolute == True:
-                        if args.synthesis == True:
-                            hdl_files.append(str(env_var_substitute(line_list[0], synthesis=True)))
+                        if args.dc == True:
+                            hdl_files.append(str(env_var_substitute(line_list[0], tcl=True)).replace("$","$env"))
                         else:   
                             hdl_files.append(str(env_var_substitute(line_list[0], tcl=True)).replace("$","$env"))
                     else:
-                        if args.synthesis == True:
-                            hdl_files.append(str(line_list[0]))
+                        if args.dc == True:
+                            hdl_files.append(str(line_list[0]).replace("$","$env"))
                         else:
                             hdl_files.append(str(line_list[0]).replace("$","$env"))
                 elif args.makefile == True:
@@ -215,11 +221,15 @@ def read_list(filelist, first, incdirs, args):
             for file in hdl_files:
                 temp_str += file + " "
             compiled_filelist.append(temp_str)
-        elif args.synthesis ==True:
-            temp_str=""
+        elif args.dc ==True:
+            if hdl_files[0].endswith(".sv"):
+                temp_str = f'analyze -format sverilog -lib WORK -define POWER_PINS [list '
+            else:
+                temp_str = f'analyze -format verilog -lib WORK -define POWER_PINS [list '
             for file in hdl_files:
-                temp_str += f'cp -p {file}  {args.rtldir}/\n'
-            compiled_filelist.append(temp_str)                                            
+                temp_str += file + " "
+            temp_str += "]"
+            compiled_filelist.append(temp_str)
         else:
             temp_str = f'add_files -norecurse -force -copy_to {args.rtldir} "'
             for file in hdl_files:
@@ -233,7 +243,7 @@ def incdir_compile(args, incdirs):
     temp_str = ""
     if args.tcl == True:
         if args.genus == False:
-            if args.synthesis == False:
+            if args.dc == False:
                 if len(incdirs) > 0:
                     temp_str = 'set_property include_dirs "'
                     for directory in incdirs:
@@ -270,8 +280,6 @@ def filelist_compile(args):
     filelist = [x+"\n" for x in filelist]
     # Create string of all paths to write out
     filelist_str = filelist_header if (args.tcl == False and args.makefile == False) else filelist_header.replace("//","#")
-    if args.synthesis == True:
-        filelist_str = "#!/bin/bash \n" + filelist_str
     if args.tcl == True:
         if args.genus==False:
         # filelist_str += incdir_compile(args, incdirs) + "\n"
@@ -292,7 +300,7 @@ if __name__ == "__main__":
     parser.add_argument("-e", "--exclude", action='store_true', help="Exclude filists including these strings")
     parser.add_argument("-t", "--tcl", action='store_true', help="Generate a TCL Script")
     parser.add_argument("-g", "--genus", action = 'store_true', help="Generate TCL script for genus")
-    parser.add_argument("-s", "--synthesis", action = 'store_true', help ="Generate bash script for copying flist to synthesis")
+    parser.add_argument("-s", "--dc", action = 'store_true', help ="Generate bash script for copying flist to synthesis")
     parser.add_argument("-m", "--makefile", action='store_true', help="Generate a Makefile RTL Sources File")
     parser.add_argument("-a", "--absolute", action='store_true', help="Substitute environment Variables with Absolute Path")
     parser.add_argument("-v", "--vfiles", action='store_true', help="Generate a vc filelist")
