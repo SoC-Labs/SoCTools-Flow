@@ -158,7 +158,7 @@ def read_list(filelist, first, incdirs, args):
                             first = False
                         else:
                             if args.genus == True:
-                                compiled_filelist.append("set_db init_hdl_search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env"))
+                                compiled_filelist.append("set_db init_hdl_search_path \"[get_db hdl_search_path] " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + "\"")
                             elif args.dc == True | args.formality ==True:
                                 compiled_filelist.append("set search_path [concat $search_path " + str(env_var_substitute(line_list[0].lstrip("+incdir+"), tcl=True)).replace("$","$env") + " ]")
                             else:
@@ -232,9 +232,9 @@ def read_list(filelist, first, incdirs, args):
             compiled_filelist.append(temp_str)
         elif args.formality == True:
             if hdl_files[0].endswith(".sv"):
-                temp_str = f'read_sverilog -r [list '
+                temp_str = f'read_sverilog -define POWER_PINS -r [list '
             else:
-                temp_str = f'read_verilog -r [list '
+                temp_str = f'read_verilog -define POWER_PINS -r [list '
             for file in hdl_files:
                 temp_str += file + " "
             temp_str += "]"
