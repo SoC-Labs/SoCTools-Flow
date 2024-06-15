@@ -13,7 +13,7 @@ import argparse
 import os
 
 # Files with these extensions are included in compiled filelists
-verilog_extensions = (".v", ".sv", ".vh")
+verilog_extensions = (".v", ".sv", ".vh",".vams")
 
 # Exclude paths including these strings
 filelist_exclusions = ["cortex","pl230"]
@@ -53,12 +53,24 @@ def env_var_substitute(path, tcl=False, synthesis=False):
     sub_path = os.path.expandvars(sub_path)
     return sub_path
 
+def append_includes(filelines, includes):
+    for inc in includes:
+        if inc != "":
+            print("-f " + inc)
+            filelines.append("-f "+inc)
+    return filelines
+
 def read_list(filelist, first, incdirs, args):
     # Create Filelist List Structure
     compiled_filelist = []
     # Open Filelist and Read Lines
     f = open(filelist, "r")
     filelines = f.readlines()
+    
+    if first:
+        includes = args.include
+        if includes != None:
+            filelines = append_includes(filelines, includes)
     f.close()
     hdl_files = []
     # Remove Black Lines from list
@@ -78,7 +90,7 @@ def read_list(filelist, first, incdirs, args):
                     pass
                 else:
                     # print(line_list[1])
-                    temp_list, first, incdirs = read_list(env_var_substitute(line_list[1]), first, incdirs, args)
+                    temp_list, first, incdirs = read_list(env_var_substitute(line_list[1]), False, incdirs, args)
                     compiled_filelist += temp_list
 
             elif line_list[0] == "-y":
@@ -206,7 +218,7 @@ def read_list(filelist, first, incdirs, args):
                     else:
                         compiled_filelist.append("VERILOG_SOURCES += " + str(line_list[0]))
                 else:
-                    if (line_list[0].endswith(".v") or (line_list[0].endswith(".sv") and (args.html == False))):
+                    if (line_list[0].endswith(".v") or line_list[0].endswith(".vams") or (line_list[0].endswith(".sv") and (args.html == False))):
                         if args.absolute == True:
                             compiled_filelist.append(env_var_substitute(line_list[0]))
                         else:
@@ -284,6 +296,9 @@ def filelist_compile(args):
     input_filelist = args.filelist
     output_filelist = args.output
     print("Compiling Filelist")
+    if args.include is not None:
+        for inc in args.include:
+            print("Including: " + inc)
     incdirs = []
     # Read in filelist and add newlines to paths
     filelist, first, incdirs = read_list(input_filelist, True, incdirs, args)
@@ -307,6 +322,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Compiles Filelist to Read')
     parser.add_argument("-f", "--filelist", type=str, help="Input Filelist to Read")
     parser.add_argument("-o", "--output", type=str, help="Output Filelist location")
+    parser.add_argument("-i", "--include",nargs='*', type=str, help="Include extra flist files")
     parser.add_argument("-e", "--exclude", action='store_true', help="Exclude filists including these strings")
     parser.add_argument("-t", "--tcl", action='store_true', help="Generate a TCL Script")
     parser.add_argument("-g", "--genus", action = 'store_true', help="Generate TCL script for genus")

@@ -43,5 +43,5 @@ else
     simscript=$(find ${SOCLABS_SOCSIM_PATH//:/\ } -name "${1}.sh")
 
     # Run Script if Found
-    $simscript $@
+    $simscript $@ SIM=${3}
 fi
