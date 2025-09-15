@@ -107,9 +107,9 @@ def read_list(filelist, first, incdirs, args):
                                         compiled_filelist.append("read_hdl " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                                 elif args.dc ==True:
                                     if file.endswith(".sv"):
-                                        compiled_filelist.append("analyze -format sverilog -lib WORK -define POWER_PINS " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
+                                        compiled_filelist.append("analyze -format sverilog -lib WORK " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                                     else:
-                                        compiled_filelist.append("analyze -format verilog -lib WORK -define POWER_PINS " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
+                                        compiled_filelist.append("analyze -format verilog -lib WORK " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                                 elif args.makefile == True:
                                     compiled_filelist.append("VERILOG_SOURCES += " + str(env_var_substitute((line_list[1])+"/"+str(file), synthesis=True)))
                                 else:
@@ -125,9 +125,9 @@ def read_list(filelist, first, incdirs, args):
                                         compiled_filelist.append("read_hdl " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                                 elif args.dc == True:
                                     if file.endswith(".sv"):
-                                        compiled_filelist.append("analyze -format sverilog -lib WORK -define POWER_PINS " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
+                                        compiled_filelist.append("analyze -format sverilog -lib WORK " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                                     else:
-                                        compiled_filelist.append("analyze -format verilog -lib WORK -define POWER_PINS " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
+                                        compiled_filelist.append("analyze -format verilog -lib WORK " + str(env_var_substitute(line_list[1], tcl=True)).replace("$","$env")+"/"+str(file))
                                 elif args.makefile == True:
                                     compiled_filelist.append("VERILOG_SOURCES += " + str(line_list[1]).replace("$","$env")+"/"+str(file))
                                 else:
@@ -227,26 +227,26 @@ def read_list(filelist, first, incdirs, args):
         # temp_str = 'add_files -norecurse -scan_for_includes "'
         if args.genus == True:
             if hdl_files[0].endswith(".sv"):
-                temp_str = f'read_hdl -define POWER_PINS -language sv '
+                temp_str = f'read_hdl -language sv '
             else:
-                temp_str = f'read_hdl -define POWER_PINS '
+                temp_str = f'read_hdl '
             for file in hdl_files:
                 temp_str += file + " "
             compiled_filelist.append(temp_str)
         elif args.dc ==True:
             if hdl_files[0].endswith(".sv"):
-                temp_str = f'analyze -format sverilog -lib WORK -define POWER_PINS [list '
+                temp_str = f'analyze -format sverilog -lib WORK [list '
             else:
-                temp_str = f'analyze -format verilog -lib WORK -define POWER_PINS [list '
+                temp_str = f'analyze -format verilog -lib WORK [list '
             for file in hdl_files:
                 temp_str += file + " "
             temp_str += "]"
             compiled_filelist.append(temp_str)
         elif args.formality == True:
             if hdl_files[0].endswith(".sv"):
-                temp_str = f'read_sverilog -define POWER_PINS -r [list '
+                temp_str = f'read_sverilog -r [list '
             else:
-                temp_str = f'read_verilog -define POWER_PINS -r [list '
+                temp_str = f'read_verilog -r [list '
             for file in hdl_files:
                 temp_str += file + " "
             temp_str += "]"
