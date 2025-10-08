@@ -226,13 +226,13 @@ def read_list(filelist, first, incdirs, args):
     if len(hdl_files) > 0:
         # temp_str = 'add_files -norecurse -scan_for_includes "'
         if args.genus == True:
-            if hdl_files[0].endswith(".sv"):
-                temp_str = f'read_hdl -language sv '
-            else:
-                temp_str = f'read_hdl '
-            for file in hdl_files:
-                temp_str += file + " "
-            compiled_filelist.append(temp_str)
+            for files in hdl_files:
+                if files.endswith(".sv"):
+                    temp_str = f'read_hdl -language sv '
+                else:
+                    temp_str = f'read_hdl '
+                temp_str += files + " "
+                compiled_filelist.append(temp_str)
         elif args.dc ==True:
             if hdl_files[0].endswith(".sv"):
                 temp_str = f'analyze -format sverilog -lib WORK [list '
