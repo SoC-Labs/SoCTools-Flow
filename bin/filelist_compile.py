@@ -13,7 +13,7 @@ import argparse
 import os
 
 # Files with these extensions are included in compiled filelists
-verilog_extensions = (".v", ".sv", ".vh",".vams")
+verilog_extensions = (".v", ".sv", ".vh",".vams",".vlib")
 
 # Exclude paths including these strings
 filelist_exclusions = ["cortex","pl230"]
