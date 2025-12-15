@@ -253,10 +253,14 @@ def read_list(filelist, first, incdirs, args):
             compiled_filelist.append(temp_str)
         else:
             temp_str = f'add_files -norecurse -force -copy_to {args.rtldir} "'
+            n_inc=0
             for file in hdl_files:
-                temp_str += file + " "
-            temp_str += '"'
-            compiled_filelist.append(temp_str)
+                if not(file.startswith("+libext+")):
+                    temp_str += file + " "
+                    n_inc=+1
+            if(n_inc!=0):
+                temp_str += '"'
+                compiled_filelist.append(temp_str)
 
     return compiled_filelist, first, incdirs
 
