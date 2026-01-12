@@ -12,4 +12,4 @@
 #!/bin/bash
 
 # Update all Submodules to latest commit
-cd $SOCLABS_DESIGN_ROOT; git pull; git submodule foreach --recursive git pull
+cd $SOCLABS_PROJECT_DIR; git pull; git submodule foreach --recursive git pull
