@@ -35,7 +35,7 @@ def read_branchfile(branchfile):
     sub_repos = []
     for line in filelines:
         # Find lines of the format (repo)\s+:\+(branch) that don't start with #
-        match = re.match(r'(?!\s*#)\s+(.*):\s*(.*)\s*$', line.strip())
+        match = re.match(r'(?!\s*#)\s*(.*):\s*(.*)\s*$', line.strip())
         if match:
             repo_name, branch_name = match.groups()
             sub_repos.append(git_repo(repo_name, branch_name))
@@ -46,21 +46,16 @@ def find_branchfile(directory, branchfile):
     if exists(f"{directory}/{branchfile}"):
         print(f"Found Branchfile in {directory}")
         for repo in read_branchfile(f"{directory}/{branchfile}"):
-            print(f"Subrepo found: {repo.directory}")
+            # Checkout each repo to the specified branch
             repo_checkout(f"{directory}/{repo.directory}", repo.branch, branchfile)
-        
-            # Look for branchfiles in the subrepos
-            find_branchfile(repo.directory, branchfile)
-    else:
-        print(f"No branchfile present in {directory}")
     
 def repo_checkout(directory, branch, branchfile):
     """ Checkout the repository on a specific branch. """
     print(f"Checking out {directory} to branch {branch}")
-    os.system(f"cd {directory}; git checkout --recurse-submodules {branch}")
-    os.system(f"cd {directory}; git pull")
+    os.system(f"cd {directory}; git checkout --recurse-submodules {branch}; git pull")
+    
+    # After checkout, check for branchfile in sub-repository
     find_branchfile(directory, branchfile)
-    #TODO: make this work recursively over each subrepo
     
 if __name__ == "__main__":
     # Capture Arguments from Command Line
@@ -68,5 +63,5 @@ if __name__ == "__main__":
     parser.add_argument("-b", "--branchfile", type=str, help="File to Read in Branches from")
     parser.add_argument("-t", "--topproject", type=str, help="Top-level directory of Project")
     args = parser.parse_args()
-    print("Running subrepo checkout")
+    print("Running Subrepository Checkout Script")
     find_branchfile(args.topproject, args.branchfile)
