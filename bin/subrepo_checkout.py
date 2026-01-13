@@ -18,6 +18,7 @@ import os
 import re
 
 from os.path import exists
+import subprocess
 
 class git_repo():
     """ This is a class which contains the repository name and the branch to check out to. """
@@ -52,7 +53,34 @@ def find_branchfile(directory, branchfile):
 def repo_checkout(directory, branch, branchfile):
     """ Checkout the repository on a specific branch. """
     print(f"Checking out {directory} to branch {branch}")
-    os.system(f"cd {directory}; git checkout --recurse-submodules {branch}; git pull")
+    # Change to directory and checkout branch
+    try:
+        result = subprocess.run(["git", "checkout", "--recurse-submodules", branch], 
+                       cwd=directory, check=True, capture_output=True, text=True)
+        
+        # Create a dict to compare the output against
+        result_dict  = {
+            "Your branch is up to date": "warning"
+        }
+        
+        # Analyze the output
+        # Check for specific output patterns
+        output_text = result.stdout + result.stderr
+        for pattern, level in result_dict.items():
+            if pattern not in output_text:
+                print(f"Git {level}: {output_text.strip()}")
+            break
+        else:
+            # No specific patterns found, print normal output
+            if result.stdout:
+                print(f"Checkout output: {result.stdout.strip()}")
+            if result.stderr:
+                print(f"Checkout warnings: {result.stderr.strip()}")
+        
+        subprocess.run(["git", "pull"], 
+                    cwd=directory, check=True, capture_output=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Git command failed in {directory}: {e}")
     
     # After checkout, check for branchfile in sub-repository
     find_branchfile(directory, branchfile)

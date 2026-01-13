@@ -66,7 +66,7 @@ if [ ! -f $SOCLABS_PROJECT_DIR/.socinit ] || [ $force = true ]; then
                                                                  
     # Update all submodules in the repository
     cd $SOCLABS_PROJECT_DIR
-    git submodule update --recursive
+    git pull
     python3 $SOCLABS_SOCTOOLS_FLOW_DIR/bin/subrepo_checkout.py -b projbranch -t $SOCLABS_PROJECT_DIR
     git restore $SOCLABS_PROJECT_DIR/.gitmodules
     touch $SOCLABS_PROJECT_DIR/.socinit
