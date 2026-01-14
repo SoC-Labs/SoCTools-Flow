@@ -13,6 +13,20 @@
 # subrepositories and execute it to set up repository-specific configurations.
 #-----------------------------------------------------------------------------
 
+#!/bin/bash
+OPTIND=1
+
+# Parse command line options
+force=false
+while getopts "f" arg; do
+    case $arg in
+        f) # Force repository initialization
+            force=true
+            echo "Forcing repository initialization"
+            ;;
+    esac
+done
+
 find_subrepos() {
     # Create a list of subrepositories to initialize (recursively)
     local subrepos=()
@@ -67,6 +81,8 @@ display_subrepos() {
 
 # Main function to initialize all subrepositories
 init_repos() {
+    local force_flag=$1
+    
     # Find all subrepositories
     local all_subrepos=()
     mapfile -t all_subrepos < <(find_subrepos)
@@ -76,6 +92,7 @@ init_repos() {
     
     # Find repositories with setup scripts
     echo "Finding repositories with setup repo makefile targets..."
+    echo $1
     local setup_repos=()
     mapfile -t setup_repos < <(find_repos_with_setup "${all_subrepos[@]}")
     
@@ -86,20 +103,30 @@ init_repos() {
     
     # Run the setup_repo target in each found repository
     echo -e "\n\033[1;35m-----------------------------------------------"
-    echo "Initializing Subrepositories"
+    echo "Initializing each Subrepository"
     echo -e "-----------------------------------------------\033[0m"
     for makefile in "${setup_repos[@]}"; do
         local repo_dir
         repo_dir=$(dirname "$makefile")
         makefile_name=$(basename "$makefile")
-        echo -e "Initializing repository: \033[0;32m$repo_dir\033[0m using \033[0;32m$makefile_name\033[0m"
+        
+        # Check if force flag is set or if repository needs initialization
+        if [ "$force_flag" = true ]; then
+            echo -e "Force initializing repository: \033[0;32m$repo_dir\033[0m using \033[0;32m$makefile_name\033[0m"
+        else
+            echo -e "Initializing repository: \033[0;32m$repo_dir\033[0m using \033[0;32m$makefile_name\033[0m"
+        fi
                                                                                                         
         # Change terminal colour and run the setup_repo target
         echo -e "\033[0;33m"
-        make -f "$makefile" setup_repo
+        if [ "$force_flag" = true ]; then
+            make -f "$makefile" -B setup_repo
+        else
+            make -f "$makefile" setup_repo
+        fi
         echo -e "\033[0m"
     done
     return 0
 }
 
-init_repos
+init_repos "$force"
