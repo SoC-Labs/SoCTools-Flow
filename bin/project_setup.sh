@@ -49,11 +49,23 @@ fi
 
 # Parse Command line options
 force=false
-while getopts "f" arg; do
-    case $arg in
-        f) # Force socinit
+unset_mode=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -f|--force)
             force=true
-            echo "Forcing Reinitialisation of Project"
+            echo "Forcing repository operation"
+            shift
+            ;;
+        --unset)
+            unset_mode=true
+            shift
+            ;;
+        *)
+            echo "Unknown option $1"
+            echo "Usage: $0 [-f|--force] [--unset]"
+            exit 1
             ;;
     esac
 done
