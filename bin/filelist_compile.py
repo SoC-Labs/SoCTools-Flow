@@ -136,6 +136,16 @@ def read_list(filelist, first, incdirs, args):
                                 if (file.endswith(".v") or (file.endswith(".sv") and (args.html == False))):
                                     compiled_filelist.append(line_list[1]+"/"+str(file))
             
+            elif line_list[0].startswith("+libext+"):
+                # +libext+ directives are simulator compile arguments, not source files
+                if args.makefile:
+                    compiled_filelist.append("COMPILE_ARGS += " + line_list[0])
+                elif args.vfiles:
+                    compiled_filelist.append(line_list[0])
+                # Skip for tcl mode; pass through for plain mode
+                elif not args.tcl:
+                    compiled_filelist.append(line_list[0])
+
             elif line_list[0].startswith("+incdir+"):
                 # Append to filelist
                 if args.absolute == True:
