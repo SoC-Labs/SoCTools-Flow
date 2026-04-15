@@ -243,14 +243,17 @@ def read_list(filelist, first, incdirs, args):
                     temp_str = f'read_hdl '
                 temp_str += files + " "
                 compiled_filelist.append(temp_str)
-        elif args.dc ==True:
-            if hdl_files[0].endswith(".sv"):
-                temp_str = f'analyze -format sverilog -lib WORK [list '
-            else:
-                temp_str = f'analyze -format verilog -lib WORK [list '
+        elif args.dc ==True:   
+            temp_str = ''
+            defs = ''
+            for defines in args.defines:
+                defs += ' -define ' + defines.strip('+define+')
+                #print(defines.strip('+define+'))
             for file in hdl_files:
-                temp_str += file + " "
-            temp_str += "]"
+                if file.endswith(".sv"):
+                    temp_str += f'analyze -format sverilog ' + defs + ' ' + file + '\n'
+                else:
+                    temp_str += f'analyze -format verilog ' + defs + ' ' + file + '\n'
             compiled_filelist.append(temp_str)
         elif args.formality == True:
             if hdl_files[0].endswith(".sv"):
@@ -322,7 +325,8 @@ def filelist_compile(args):
     if args.tcl == True:
         if args.genus==False:
         # filelist_str += incdir_compile(args, incdirs) + "\n"
-            filelist_str += defines_compile(args)
+            if args.dc==False:
+                filelist_str += defines_compile(args)
     for path in filelist: filelist_str += path
     filelist_str += incdir_compile(args, incdirs) + "\n"
         # filelist_str += defines_compile(args)
