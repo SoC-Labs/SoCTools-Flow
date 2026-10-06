@@ -245,10 +245,11 @@ def read_list(filelist, first, incdirs, args):
                 compiled_filelist.append(temp_str)
         elif args.dc ==True:   
             temp_str = ''
-            defs = ''
+            defs = ' -define \"'
             for defines in args.defines:
-                defs += ' -define ' + defines.strip('+define+')
+                defs += ' ' + defines.strip('+define+')
                 #print(defines.strip('+define+'))
+            defs += ' \"'
             for file in hdl_files:
                 if file.endswith(".sv"):
                     temp_str += f'analyze -format sverilog ' + defs + ' ' + file + '\n'
