@@ -1,0 +1,11 @@
+SoCTools Flow
+Copyright 2021-2026 SoC Labs (www.soclabs.org), University of Southampton
+
+This repository is licensed under the Apache License, Version 2.0 (see
+LICENSE), except where a file or a component listed below says otherwise.
+
+Third-party material
+--------------------
+bin/htmlgen/v2html/  v2html conversion software. It is NOT covered by the
+                     Apache License; it keeps its own terms, in
+                     bin/htmlgen/v2html/LICENCE.TXT.
